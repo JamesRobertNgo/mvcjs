@@ -293,11 +293,10 @@ mvcjs.EventfulArrayLike = (() => {
 })();
 
 mvcjs.finalizeValue = function(value) {
-	console.log('FINALIZE VALUE', value);
 	if (typeof value === 'object') {
-		value = new mvcjs.EventfulObject(value);
+		value = new mvcjs.EventfulObjectLike(value);
 	} else if (Array.isArray(value)) {
-		value = new mvcjs.EventfulArray(value);
+		value = new mvcjs.EventfulArrayLike(value);
 	}
 	return value;
 }

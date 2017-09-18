@@ -58,7 +58,7 @@ app.controller = {
 };
 
 $(function() {
-	let arrLike = new mvcjs.EventfulArray([1, 2, 3, 4]);
+	let arrLike = new mvcjs.EventfulArrayLike([1, 2, 3, 4]);
 	console.log('arr', arrLike._arr.toString());
 	arrLike[3] = { value: 123 };
 	arrLike[3].value = 456;
