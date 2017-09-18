@@ -1,36 +1,11 @@
-const EventfulObject = class extends Eventful {
-	constructor(obj) {
-		super();
-	}
 
-	setProp(prop, value) {
-		let value = null;
-		this.defineProperties(this, prop, {
-			get: function() {
-				this.trigger(`get:${prop}`, value);
-				return value;
-			},
-			set: function(newValue) {
-				const oldValue = value;
-				value = newValue;
-				this.trigger(`set:${prop}`, oldValue, value);
-			}
-		});
-		this[prop] = value;
-	}
 
-	unsetProp(prop) {
-		delete this[prop];
-	}
-}
 
-// --------------------------------------------------
+const app = {};
 
-const mvcjs = {};
+app.model = ['load test', 'another load test'];
 
-mvcjs.model = ['load test', 'another load test'];
-
-mvcjs.View = class extends jhn.Eventful {
+app.View = class extends mvcjs.Eventful {
 	render(wrapper) {
 		const $el = this.$el = $('<div></div>');
 
@@ -70,7 +45,7 @@ mvcjs.View = class extends jhn.Eventful {
 	}
 };
 
-mvcjs.controller = {
+app.controller = {
 	init: function(model, view) {
 		view.on('render', ($el) => {
 			for (const label of model) {
@@ -83,7 +58,23 @@ mvcjs.controller = {
 };
 
 $(function() {
-	const view = new mvcjs.View();
-	mvcjs.controller.init(mvcjs.model, view);
-	view.render(document.body);
+	let arrLike = new mvcjs.EventfulArray([1, 2, 3, 4]);
+	console.log('arr', arrLike._arr.toString());
+	arrLike[3] = { value: 123 };
+	arrLike[3].value = 456;
+	console.log('arr', arrLike._arr.toString());
+	arrLike.push('abc', 'def');
+	console.log('arr', arrLike._arr.toString());
+	arrLike.pop();
+	console.log('arr', arrLike._arr.toString());
+	arrLike.shift();
+	console.log('arr', arrLike._arr.toString());
+	arrLike.unshift('A', 'B', 'C');
+	console.log('arr', arrLike._arr.toString());
+	arrLike.splice(1, 2, 'D', 'E');
+	console.log('arr', arrLike._arr.toString());
+
+	console.log('arrLike', arrLike, arrLike.length);
+	console.log('arr', arrLike._arr);
+	console.log('toObject', arrLike[5].toObject());
 });
