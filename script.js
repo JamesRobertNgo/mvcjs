@@ -1,80 +1,63 @@
-
-
-
-const app = {};
-
-app.model = ['load test', 'another load test'];
-
-app.View = class extends mvcjs.Eventful {
-	render(wrapper) {
-		const $el = this.$el = $('<div></div>');
-
-		const $list = this.$list = $('<ol></ol>');
-		$el.append($list);
-
-		const $entry = $('<p><input type="text"> <button type="button">Add</button></p>');
-		const $entryInput = $entry.find('input');
-		$entry.find('button').on('click', (e) => {
-			e.preventDefault();
-			this.insert($entryInput.val() || undefined);
-			$entryInput.val('');
-		});
-		$el.append($entry);
-
-		if (wrapper) {
-			$(wrapper).append($el);
-		}
-		this.trigger('render', $el);
-		return $el;
+class Navi {
+	constructor(viewDefs, defViewCfg) {
+		this.views = {};
+		this.nextView = null;
 	}
 
-	insert(label = 'Untitled') {
-		const $listItem = $(`<li>${label} <button type="button">Remove</button></li>`);
-		$listItem.find('button').on('click', (e) => {
-			const idx = this.$list.children('li').index($listItem);
-			this.remove(idx);
-		})
-		this.$list.append($listItem);
-		this.trigger('insert', label);
-	}
-
-	remove(idx) {
-		const $listItem = this.$list.children(`li:nth-child(${idx + 1})`);
-		$listItem.detach();
-		this.trigger('remove', idx);
-	}
-};
-
-app.controller = {
-	init: function(model, view) {
-		view.on('render', ($el) => {
-			for (const label of model) {
-				view.insert(label);
+	closeView(view) {
+		const viewIdx = this.views.indexOf(view);
+		if (viewIdx != -1) {
+			if (this.views[this.views.length - 1] == view) {
+				view.hide();
+				if (this.views.length > 0) {
+					this.openView(this.views[this.views.length - 1]);
+				} else {
+					this.openView();
+				}
 			}
-			view.on('insert', (label) => model.push(label));
-			view.on('remove', (idx) => model.splice(idx, 1));
-		});
+			this.views.splice(viewIdx, 1);
+			view.destroy();
+		}
 	}
-};
+
+	// (view, showOpts)
+	// (defKey, instKey, showOpts)
+	openView(...args) {
+		if (args[0] instanceof NaviView) {
+			const view = args[0];
+			const showOpts = args[1];
+			const cbk = args[2];
+
+		} else if (typeof args[0] === 'string') {
+			const defKey = args[0];
+			const instKey = args[1];
+			const showOpts = args[2];
+			const cbk = args[3];
+			// TODO -
+		} else {
+			const cbk = args[0];
+
+			if (this.nextView) {
+
+			} else {
+
+			}
+		}
+	}
+}
+
+class NaviView {
+	constructor() {}
+}
+
 
 $(function() {
-	let arrLike = new mvcjs.EventfulArrayLike([1, 2, 3, 4]);
-	console.log('arr', arrLike._arr.toString());
-	arrLike[3] = { value: 123 };
-	arrLike[3].value = 456;
-	console.log('arr', arrLike._arr.toString());
-	arrLike.push('abc', 'def');
-	console.log('arr', arrLike._arr.toString());
-	arrLike.pop();
-	console.log('arr', arrLike._arr.toString());
-	arrLike.shift();
-	console.log('arr', arrLike._arr.toString());
-	arrLike.unshift('A', 'B', 'C');
-	console.log('arr', arrLike._arr.toString());
-	arrLike.splice(1, 2, 'D', 'E');
-	console.log('arr', arrLike._arr.toString());
-
-	console.log('arrLike', arrLike, arrLike.length);
-	console.log('arr', arrLike._arr);
-	console.log('toObject', arrLike[5].toObject());
+	const obj = {
+		test: 1
+	};
+	const arr = [obj, 2, 3];
+	const val = arr[0];
+	arr.splice(0, 1);
+	arr.push(val);
+	console.log(arr);
 });
